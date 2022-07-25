@@ -17,6 +17,7 @@ class GameSeeder extends Seeder
     {
         DB::table('rounds')->insert([
             'id' => 1,
+            'round_name' => 'Round_1',
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now()
         ]);

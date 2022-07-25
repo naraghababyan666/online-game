@@ -22,17 +22,18 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::post('check', [GameController::class, 'checkAnswer']);
-    Route::post('/get-rounds', [GameController::class, 'getRounds'])->name('rounds');
-    Route::post('/daily-points', [GameController::class, 'dailyPoints']);
+    Route::post('/check', [GameController::class, 'checkAnswer']); //+
+    Route::post('/get-rounds', [GameController::class, 'getRounds'])->name('rounds'); //+
+    Route::post('/daily-points', [GameController::class, 'dailyPoints']); //+
 
-    Route::post('/clue/create', [AdminController::class, 'store']);
-    Route::post('/clue/{id}/delete', [AdminController::class, 'destroy']);
+    Route::post('/round/create', [AdminController::class, 'storeRound']); //+
+    Route::post('/clue/create', [AdminController::class, 'store']); //+
+    Route::delete('/clue/{id}/delete', [AdminController::class, 'destroy']); //+
     Route::post('/clue/{id}/update', [AdminController::class, 'update']);
     Route::post('/clue/{id}/get', [AdminController::class, 'edit']);
 });
 
-Route::post('/auth', [AuthController::class, 'auth']);
+Route::post('/auth', [AuthController::class, 'auth']); //+
 Route::post('/admin/auth', [AdminController::class, 'authAdmin']);
 Route::post('/admin/clues', [AdminController::class, 'getClues']);
 

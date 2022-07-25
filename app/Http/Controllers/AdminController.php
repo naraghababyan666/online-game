@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Answers;
 use App\Models\Clues;
+use App\Models\Round;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class AdminController extends Controller
 {
@@ -37,19 +39,37 @@ class AdminController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse
      */
+
+    public function storeRound(){
+//        $new_round = new Round;
+//        $new_round->created_at = Carbon::now();
+//        $new_round->updated_at = Carbon::now();
+//        $new_round->save();
+        Round::insert([
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
+        ]);
+        $id = DB::getPdo()->lastInsertId();
+        $round = Round::find($id);
+        $round->round_name = 'Round_'.$id;
+        $round->save();
+        return response()->json(['success' => 'Game round successfully created!']);
+    }
+
+
     public function store(Request $request)
     {
         $data = $request->all();
-        if($data['clue'] && $data['answer']){
+        if($data['clue'] && $data['answer'] && $data['round_id']){
             $clue = Clues::insertGetId([
                 'clue' => $data['clue'],
+                'round_id' => $data['round_id'],
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ]);
-            dd($clue);
             Answers::insert([
                 'right_answer' => $data['answer'],
-                'clue_id' => $clue
+                'round_id' => $data['round_id']
             ]);
 
             return response()->json(['success' => 'Successfully added']);
@@ -109,10 +129,10 @@ class AdminController extends Controller
      */
     public function destroy($id)
     {
-        $answer = Answers::where('clue_id', $id)->first()->id;
-        if($answer){
-            Answers::destroy($answer);
-        }
+//        $answer = Answers::where('clue_id', $id)->first()->id;
+//        if($answer){
+//            Answers::destroy($answer);
+//        }
         Clues::destroy($id);
         return response()->json(['success' => 'Successfully deleted']);
     }
